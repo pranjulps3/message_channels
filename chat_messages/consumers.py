@@ -16,9 +16,12 @@ from channels.auth import channel_session_user, channel_session_user_from_http
 def message(message):
     # ASGI WebSocket packet-received and send-packet message types
     # both have a "text" key for their textual data.
+    print("sad")
+    mes = parse_qs(message.content['text'])
+    print(mes)
     Group("chat").send({
         "text": json.dumps({
-            'message' :message.content['text'],
+            'message' :mes,
             'hull' : "hola",
             }),
     })

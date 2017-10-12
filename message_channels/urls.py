@@ -19,5 +19,6 @@ from chat_messages.views import base
 
 urlpatterns = [
 	url(r'^chat/', base),
+	# url(r'^chat/form/', mess),
 	url(r'^admin/', admin.site.urls),
 ]

@@ -1,8 +1,12 @@
 <div id="chat" class="chat-div user">
 	
 </div>
-<input type="text" id="chat-input" name="message">
-<button id="chat-submit">send</button>
+<form class="ui form" action="/chat/" id="message-form" method="post" enctype="multipart/form-data">
+	{% csrf_token %}
+	<input type="text" id="chat-input" name="message">
+	<input type="file" name="new-file">
+	<button id="chat-submit">send</button>
+</form>
 <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
 
 <script type="text/javascript">
@@ -12,11 +16,13 @@
 		var data = JSON.parse(event.data);
 		chatdiv.append("<br>"+data.message);
 	}
-	$('#chat-submit').click(function(event){
-		var message = $('#chat-input');
+	$('#message-form').submit(function(event){
+		event.preventDefault();
+		var form = $('#message-form');
+		var message = form.serialize();
 		if(message != ""){
-			socket.send("{{request.user}} :"+message.val());
-			message.val("");
+			socket.send(message.);
+			$('#chat-input').val("");
 		}
 	});
 </script>
