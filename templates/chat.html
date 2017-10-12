@@ -1,0 +1,22 @@
+<div id="chat" class="chat-div user">
+	
+</div>
+<input type="text" id="chat-input" name="message">
+<button id="chat-submit">send</button>
+<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+	socket = new WebSocket("ws://"+window.location.host)
+	socket.onmessage = function(event){
+		var chatdiv = $('#chat');
+		var data = JSON.parse(event.data);
+		chatdiv.append("<br>"+data.message);
+	}
+	$('#chat-submit').click(function(event){
+		var message = $('#chat-input');
+		if(message != ""){
+			socket.send("{{request.user}} :"+message.val());
+			message.val("");
+		}
+	});
+</script>
