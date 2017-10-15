@@ -1,0 +1,468 @@
+/*Author: Pranjul Shukla (pranjul.ps3@gmail.com)
+  GitHub: http://www.github.com/pranjulps3
+  This Repository: http://www.github.com/pranjulps3/Vayu
+*/
+:root {
+  --color-blue: #3F51B5;
+  --color-black: #404241;
+  --color-green: #00897b;
+  --color-yellow: #FFC107;
+  --color-purple: #9C27B0;
+  --color-orange: #FF9800;
+  --color-red: #F44336;
+  --color-teal: #009688;
+  --color-cyan: #00BCD4;
+  --color-pink: #E91E63;
+}
+
+@import url('https://fonts.googleapis.com/css?family=Open+Sans');
+
+*{
+  font-family:'Open Sans', sans-serif;
+  text-shadow: rgba(0,0,0,.01) 0 0 1px;
+  -webkit-font-smoothing: antialiased;
+}
+
+body{
+  margin: 0px;
+}
+/*start Button*/
+
+/*Ripple effect start*/
+.ripple{
+  position: absolute;
+  top:0; left:0; bottom:0; right:0;
+  overflow: hidden;
+  -webkit-transform: translateZ(0); /* to contain zoomed ripple */
+  transform: translateZ(0);
+  border-radius: inherit; /* inherit from parent (rounded buttons etc) */
+  pointer-events: none; /* allow user interaction */
+          animation: ripple-shadow 2s forwards;
+  -webkit-animation: ripple-shadow 2s forwards;
+}
+.rippleWave{
+  backface-visibility: hidden;
+  position: absolute;
+  border-radius: 50%;
+  transform: scale(0.7); -webkit-transform: scale(0.7);
+  background: rgba(210,210,210, 0.61);
+  opacity: 0.45;
+          animation: ripple 2s forwards;
+  -webkit-animation: ripple 2s forwards;
+}
+@keyframes ripple-shadow {
+  0%   {box-shadow: 0 0 0 rgba(0,0,0,0.0);}
+  20%  {box-shadow: 0 4px 16px rgba(0,0,0,0.3);}
+  100% {box-shadow: 0 0 0 rgba(0,0,0,0.0);}
+}
+@-webkit-keyframes ripple-shadow {
+  0%   {box-shadow: 0 0 0 rgba(0,0,0,0.0);}
+  20%  {box-shadow: 0 4px 16px rgba(0,0,0,0.3);}
+  100% {box-shadow: 0 0 0 rgba(0,0,0,0.0);}
+}
+@keyframes ripple {
+  to {transform: scale(24); opacity:0;}
+}
+@-webkit-keyframes ripple {
+  to {-webkit-transform: scale(24); opacity:0;}
+}
+/*Ripple effect end*/
+
+.button{
+  padding:1em;
+  padding-top: 0.6em;
+  padding-bottom: 0.5em;
+  color: var(--color-purple);
+  border: 0.1em solid var(--color-purple);
+  background-color: rgba(0, 0, 0, 0);
+  border-radius: 0.3em;
+  font-weight: 700;
+  font-size: 1em;
+  outline: none;
+  transition: color,background-color .15s ease-in-out;
+}
+
+.button:hover {
+  color: white;
+  background-color: var(--color-purple);
+  cursor:pointer;
+  outline: none;
+  transition: background .15s ease-in-out,color .15s ease-in-out;
+
+}
+
+.button:active {
+  outline: none;
+}
+
+.basic.button{
+  border-radius: 0.15em;
+  padding:1.1em;
+  padding-top: 0.7em;
+  padding-bottom: 0.6em;
+  background-color: #f2f2f2;
+  border: 0px solid;
+}
+
+
+.filled.button{
+  border-radius: 0.15em;
+  padding:1.1em;
+  padding-top: 0.7em;
+  padding-bottom: 0.6em;
+  color: white;
+  background-color: var(--color-purple);
+  border: 0px solid;
+}
+
+.filled.button:hover {
+  padding:1.1em;
+  padding-top: 0.7em;
+  padding-bottom: 0.6em;
+  box-shadow: none;
+  transition: background .15s ease-in-out,color .15s ease-in-out, box-shadow .15s ease-in-out;
+
+}
+
+.filled.button:active {
+  outline: none;
+  box-shadow: none;
+  transform: none;
+}
+
+.transparent.button{
+  border: 0px solid;
+  color: var(--color-purple);
+  background-color: rgba(0,0,0,0);
+}
+
+.transparent.button:hover{
+  border: 0px solid;
+  color: var(--color-purple);
+  background-color: rgba(0,0,0,0);
+}
+
+.raised.button{
+  box-shadow: 0 2px 4px 0 rgba(0,0,0,.4);
+  transition: 0.15s ease-in-out;
+}
+
+.raised.button:hover{
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,.4);
+  transition: 0.15s ease-in-out;
+}
+
+.raised.button:active{
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,.4);
+  transition: 0.15s ease-in-out;
+}
+
+.clickable:active{
+  transform: translateY(1px);
+}
+
+.wave.button:hover{
+  border: 0px;
+  padding:1.1em;
+  padding-top: 0.7em;
+  padding-bottom: 0.6em;
+}
+
+.wave.transparent.button:hover{
+  border: 0px solid;
+  padding:1em;
+  padding-top: 0.6em;
+  padding-bottom: 0.5em;
+  background-color: rgba(0,0,0,0.1);
+}
+
+.button.tiny {
+    font-size: 70%;
+}
+
+.button.small {
+    font-size: 85%;
+}
+
+.button.big {
+    font-size: 110%;
+}
+
+.button.large {
+    font-size: 125%;
+}
+
+.button.blue{
+  color: var(--color-blue);
+  border-color: var(--color-blue);
+}
+
+.filled.button.blue{
+  color: white;
+  background-color: var(--color-blue);
+}
+
+.button.blue:hover{
+  color: white;
+  background-color: var(--color-blue);
+  border-color: var(--color-blue);
+}
+
+.button.black{
+  color: var(--color-black);
+  border-color: var(--color-black);
+}
+
+.filled.button.black{
+  color: white;
+  background-color: var(--color-black);
+}
+
+.button.black:hover{
+  color: white;
+  background-color: var(--color-black);
+  border-color: var(--color-black);
+}
+
+.button.green{
+  color: var(--color-green);
+  border-color: var(--color-green);
+}
+
+.filled.button.green{
+  color: white;
+  background-color: var(--color-green);
+}
+
+.button.green:hover{
+  color: white;
+  background-color:var(--color-green);
+  border-color: var(--color-green);
+}
+
+.button.yellow{
+  color: var(--color-yellow);
+  border-color: var(--color-yellow);
+}
+
+.filled.button.yellow{
+  color: white;
+  background-color: var(--color-yellow);
+}
+
+.button.yellow:hover{
+  color: white;
+  background-color: var(--color-yellow);
+  border-color: var(--color-yellow);
+}
+
+.button.orange{
+  color: var(--color-orange);
+  border-color: var(--color-orange);
+}
+
+.filled.button.yellow{
+  color: white;
+  background-color: var(--color-yellow);
+}
+
+.button.orange:hover{
+  color: white;
+  background-color: var(--color-orange);
+  border-color: var(--color-orange);
+}
+
+.button.red{
+  color: var(--color-red);
+  border-color: var(--color-red);
+}
+
+.filled.button.red{
+  color: white;
+  background-color: var(--color-red);
+}
+
+.button.red:hover{
+  color: white;
+  background-color: var(--color-red);
+  border-color: var(--color-red);
+}
+
+.button.teal{
+  color: var(--color-teal);
+  border-color: var(--color-teal);
+}
+
+.filled.button.teal{
+  color: white;
+  background-color: var(--color-teal);
+}
+
+.button.teal:hover{
+  color: white;
+  background-color: var(--color-teal);
+  border-color: var(--color-teal);
+}
+
+.button.pink{
+  color: var(--color-pink);
+  border-color: var(--color-pink);
+}
+
+.filled.button.pink{
+  color: white;
+  background-color: var(--color-pink);
+}
+
+.button.pink:hover{
+  color: white;
+  background-color: var(--color-pink);
+  border-color: var(--color-pink);
+}
+
+.button.cyan{
+  color: var(--color-cyan);
+  border-color: var(--color-cyan);
+}
+
+.filled.button.cyan{
+  color: white;
+  background-color: var(--color-cyan);
+}
+
+.button.cyan:hover{
+  color: white;
+  background-color: var(--color-cyan);
+  border-color: var(--color-cyan);
+}
+
+.sharp.button{
+  border-radius: 0px;
+}
+
+/*End button*/
+
+
+/*start text input*/
+
+input[type="text"],textarea, select{
+  border-radius: 0.15em;
+  border:1px solid rgba(0,0,0,0);
+  background-color: rgba(0,0,0,0.05);
+  box-shadow: 0 1px 2px 0 rgba(0,0,0,.4);
+  padding:1em;
+  outline: none;
+  padding-top: 0.6em;
+  padding-bottom: 0.6em;
+  transition: .2s ease-in-out;
+}
+
+input[type="text"]:hover, textarea:hover, select:hover{
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,.4);
+  outline: none;
+  transition: box-shadow .2s ease-in-out;
+}
+
+input[type="text"]:focus, textarea:focus{
+  background-color: white;
+  box-shadow: 0 2px 4px 0 rgba(0,0,0,.4);
+  outline: none;
+  transition: background .2s ease-in-out,box-shadow .2s ease-in-out,border .2s ease-in-out;
+}
+
+
+
+/*end text input*/
+
+/*divisions*/
+.div{
+  padding:1.1em;
+  padding-top: 0.6em;
+  padding-bottom: 0.6em;
+}
+
+.div.pink{
+  color: var(--color-pink);
+  border-color: var(--color-pink);
+}
+
+.div.solid.pink{
+  background-color: var(--color-pink);
+  color: white;
+}
+
+.div.blue{
+  color: var(--color-blue);
+  border-color: var(--color-blue);
+}
+
+.div.solid.blue{
+  background-color: var(--color-blue);
+  color: white;
+}
+
+.div.teal{
+  color: var(--color-teal);
+  border-color: var(--color-teal);
+}
+
+.div.solid.teal{
+  background-color: var(--color-teal);
+  color: white;
+}
+
+.top.menu{
+  position: relative;
+  top: 0px;
+}
+
+.bottom.menu{
+  position: relative;
+  bottom: 0px;
+}
+
+.fixed.menu{
+  position: fixed;
+}
+
+.div.menu{
+  padding: 0px;
+  display: inline-block;
+}
+
+.stretched{
+  height: 100%;
+  width: 100%;
+}
+
+.xstretched{
+  width: 100%;
+}
+
+.ystretched{
+  height: 100%;
+}
+
+.menu .item{
+  display: inline;
+  padding: 1em;
+  padding-bottom: 0.6em;
+  padding-top: 0.6em;
+}
+
+.menu .transparent.button{
+  padding: 1em;
+  padding-bottom: 0.6em;
+  padding-top: 0.6em;
+}
+
+.menu .transparent.button:hover{
+  padding: 1em;
+  padding-bottom: 0.6em;
+  padding-top: 0.6em;
+}
+
+.header{
+  font-size: 125%;
+}
+/*end divisions*/

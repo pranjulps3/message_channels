@@ -18,11 +18,9 @@ def message(message):
     # both have a "text" key for their textual data.
     print("sad")
     mes = parse_qs(message.content['text'])
-    print(mes)
     Group("chat").send({
         "text": json.dumps({
             'message' :mes,
-            'hull' : "hola",
             }),
     })
 

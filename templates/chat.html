@@ -1,28 +1,96 @@
-<div id="chat" class="chat-div user">
-	
-</div>
-<form class="ui form" action="/chat/" id="message-form" method="post" enctype="multipart/form-data">
-	{% csrf_token %}
-	<input type="text" id="chat-input" name="message">
-	<input type="file" name="new-file">
-	<button id="chat-submit">send</button>
-</form>
-<script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+<head>
+	<link rel="stylesheet" type="text/css" href="{% static 'css/vayu.css' %}">
+	<style type="text/css">
+		html, body{
+			height: 100%;
+		}
 
+		#chat{
+			max-height: 95% !important;
+			width: auto;
+			z-index: 999;
+			background-color: rgba(0,0,0,0);
+		}
+
+		.scroll::-webkit-scrollbar {
+ 	 		width: 4px;
+			background: rgba(0, 0, 0, .0);
+		}
+		
+		.scroll::-webkit-scrollbar-thumb {
+  			background-color: rgba(0, 0, 0, .6);
+		}
+
+		#chat-input {
+			float: left;
+			border: none;
+			padding:1.1em;
+			padding-top: 0.7em;
+			padding-bottom: 0.6em;
+			width: calc(85%);
+		}
+		.chat-div{
+			background-image: url({% static 'img/chatback.jpg' %});
+			height: 95% !important;
+			width: 100% !important;
+			overflow: auto;
+			position: relative;
+			
+		}
+
+		.bottom.menu{
+			margin-top: -390px;
+		}
+	</style>
+</head>
+<body>
+
+<div class="xstretched solid blue div top menu">
+	<button class="transparent sharp wave button item" style="color: white;">Back</button>
+	<div class="item header">Chat header</div>
+</div>
+
+<div class="chat-div stretched scroll">
+	<div class="scroll" id="chat" >
+		
+	</div>
+</div>
+
+<div class="div xstretched bottom menu">
+	<form class="item chatform" action="/chat/" id="message-form" method="post" enctype="multipart/form-data">
+		{% csrf_token %}
+		<input class="item" type="text" id="chat-input" name="message">
+		<input class="item" type="file" name="new-file" style="display: none;">
+		<button class="filled sharp item raised blue wave button" id="chat-submit">send</button>
+	</form>
+</div>
+</body>
+
+
+
+
+<script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/vayu.js' %}"></script>
 <script type="text/javascript">
 	socket = new WebSocket("ws://"+window.location.host)
 	socket.onmessage = function(event){
 		var chatdiv = $('#chat');
 		var data = JSON.parse(event.data);
-		chatdiv.append("<br>"+data.message);
+		chatdiv.append("<br>"+data.message.message);
 	}
 	$('#message-form').submit(function(event){
 		event.preventDefault();
 		var form = $('#message-form');
 		var message = form.serialize();
-		if(message != ""){
-			socket.send(message.);
+		console.log(message);
+		if($('#chat-input').val() != ""){
+			socket.send(message);
 			$('#chat-input').val("");
 		}
 	});
+
+
 </script>
