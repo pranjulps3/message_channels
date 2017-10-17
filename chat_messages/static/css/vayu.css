@@ -15,6 +15,7 @@
   --color-pink: #E91E63;
 }
 
+
 @import url('https://fonts.googleapis.com/css?family=Open+Sans');
 
 *{
@@ -616,7 +617,7 @@ a{
 
 .chat-input-div{
   position: relative;
-  height: 10%;
+  height: 50%;
   width: 100%;
   bottom: 0px;
     left: 0px;
@@ -624,7 +625,7 @@ a{
     display: inline-block;
 }
 
-input.chat-input {
+textarea.chat-input {
     width: 80%;
     height: 100%;
     background: #f1f0f1;
@@ -637,6 +638,7 @@ input.chat-input {
     padding-right: 2%;
     font-size: 4vh;
     color: #666;
+    resize: none;
 }
 
 .send{
@@ -658,5 +660,14 @@ input.chat-input {
   color: var(--color-blue) !important;
   transition: 0.2s ease-in;
 }
+
+#message-form{
+  height: 21%;
+  margin: 0px;
+  padding: 0px;
+  bottom: 0px;
+  border: none;
+}
+
 
 /*end chat app*/
