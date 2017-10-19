@@ -4,7 +4,6 @@ from message_channels.settings import MEDIA_ROOT as root
 
 # Create your models here.
 
-
 def file_directory(instance, filename):
 	return 'user_{0}/attachments/{1}'.format(instance.user.id, filename)
 
