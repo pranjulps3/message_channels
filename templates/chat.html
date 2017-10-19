@@ -62,7 +62,7 @@
 <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/vayu.js' %}"></script>
 <script type="text/javascript">
-	socket = new WebSocket("ws://"+window.location.host)
+	socket = new WebSocket("ws://"+window.location.host+"/chat/")
 	socket.onmessage = function(event){
 		var chatdiv = $('.chat');
 		var data = JSON.parse(event.data);
@@ -72,11 +72,13 @@
 		event.preventDefault();
 		var form = $('#message-form');
 		var message = form.serialize();
-		console.log(message);
-		if($('#chat-input').val() != ""){
+		var text = $('#chat-input').val();
+		if($.trim(text).length != 0){
 			socket.send(message);
 			$('#chat-input').val("");
+			return;
 		}
+		$('#chat-input').val("");
 	});
 
 	$('#file-input-button').click(function(e){
