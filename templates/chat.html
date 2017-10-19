@@ -41,17 +41,17 @@
       </div>
     </li>
     </ol>
-    <form id="message-form">
+    <form id="message-form" enctype="multipart/form-data">
 	    <div class="chat-input-div">
-	    	<textarea class="chat-input scroll" id="chat-input" rows=1 name="message" type="text" placeholder="Type here!"></textarea>
+	    	<textarea class="chat-input scroll" id="chat-input" rows=1 name="message" type="text" placeholder="Type a message...."></textarea>
 	    	<input id="file-input" style="display: none;" type="file" name="attachments" multiple>
 	    	<input id="image-input" style="display: none;" type="file" name="images" multiple>
 	    	<button style="padding:0px;" type="submit" class="send button blue filled wave sharp">send</button> 
 		</div>
 	    <div class="chat-input-div">
-	    	<button id="emoji" class="tri-button button transparent wave sharp" style="padding:0px;float: left;">emoji</button> 
-	    	<button id="image-input-button" class="tri-button button transparent wave sharp" style="padding:0px;">image</button> 
-	    	<button id="file-input-button" class="tri-button button transparent wave sharp" style="padding:0px;float: right;">attachment</button> 
+	    	<button type="button" id="emoji" class="tri-button button transparent wave sharp" style="padding:0px;float: left;">emoji</button> 
+	    	<button type="button" id="image-input-button" class="tri-button button transparent wave sharp" style="padding:0px;">image</button> 
+	    	<button type="button" id="file-input-button" class="tri-button button transparent wave sharp" style="padding:0px;float: right;">attachment</button> 
 	    </div>
     </form>
 </body>
@@ -62,6 +62,8 @@
 <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/vayu.js' %}"></script>
 <script type="text/javascript">
+	var filebtn = $('#file-input-button'), imagebtn = $('#image-input-button');
+	var file = $('#file-input'), image = $('#image-input');
 	socket = new WebSocket("ws://"+window.location.host+"/chat/")
 	socket.onmessage = function(event){
 		var chatdiv = $('.chat');
@@ -70,29 +72,68 @@
 	}
 	$('#message-form').submit(function(event){
 		event.preventDefault();
-		var form = $('#message-form');
-		var message = form.serialize();
+		var form = $('#message-form').serialize();
 		var text = $('#chat-input').val();
-		if($.trim(text).length != 0){
-			socket.send(message);
+		if($.trim(text).length != 0 || file.val()!="" || image.val()!="" ){
+			socket.send(form);
+			console.log("sent");
 			$('#chat-input').val("");
 			return;
 		}
 		$('#chat-input').val("");
 	});
 
-	$('#file-input-button').click(function(e){
-		$('#file-input').trigger("click");
+	filebtn.click(function(e){
+		file.trigger("click");
 	});
 
-	$('#image-input-button').click(function(e){
-		$('#image-input').trigger("click");
+	imagebtn.click(function(e){
+		image.trigger("click");
 	});
 
 	$('.chat-input').keyup(function (event) {
-    if (event.keyCode == 13 & !event.shiftKey) {          
+    	if (event.keyCode == 13 & !event.shiftKey) {          
             $('#message-form').submit();
-    }
-});
+    	}
+	});
+
+	var ValidImageTypes = ["image/gif", "image/jpeg", "image/png"];
+
+	image.change(function(e){
+		var boolsize = true, booltype = true;
+		for(i=0; i < e.target.files.length; i++){
+			var fl = e.target.files[i];
+			if ((fl.size/(1024*1024)) > 10)
+				boolsize = false;
+
+			if($.inArray(fl["type"], ValidImageTypes) < 0)
+				booltype = false
+		}
+		if(!boolsize)
+		{
+			image.val("");
+			alert("Upload image size should be below 10 Mb");
+		}
+		else if(!booltype)
+		{
+			image.val("");
+			alert("Uploaded image should be among "+ValidImageTypes);
+		}
+	});
+
+	file.change(function(e){
+		var boolsize = true;
+		for(i=0; i < e.target.files.length; i++){
+			var fl = e.target.files[i];
+			if ((fl.size/(1024*1024)) > 25)
+				boolsize = false;
+		}
+		if(!boolsize)
+		{
+			file.val("");
+			alert("Upload file size should be below 25 Mb");
+		}
+	});
+
 
 </script>
