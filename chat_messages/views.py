@@ -5,3 +5,6 @@ from django.shortcuts import render
 
 def base(request):
 	return render(request, 'chat.html')
+
+def receiver(request):
+	pass

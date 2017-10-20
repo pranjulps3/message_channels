@@ -1,11 +1,11 @@
 from django.db import models
 from django.contrib.auth.models import User
-from message_channels.settings import MEDIA_ROOT as root
+# from message_channels.settings import MEDIA_URL as medial
 
 # Create your models here.
 
 def file_directory(instance, filename):
-	return 'user_{0}/attachments/{1}'.format(instance.user.id, filename)
+	return 'media/chat/user_{0}/attachments/{1}'.format(instance.user.id, filename)
 
 """ A message can have multiple attachments to it """
 class Attachment(models.Model):
@@ -14,7 +14,7 @@ class Attachment(models.Model):
 
 
 def image_directory(instance, filename):
-	return 'user_{0}/images/{1}'.format(instance.user.id, filename)
+	return 'media/chat/user_{0}/images/{1}'.format(instance.user.id, filename)
 
 """ A message can have multiple images in it """
 class MessageImage(models.Model):
@@ -32,6 +32,7 @@ class Message(models.Model):
 	seen = models.BooleanField(default=False)
 	recipient = models.ForeignKey(User, related_name = "recieved_messages")
 	sender = models.ForeignKey(User, related_name = "sent_messages")
+	timestamp = models.DateTimeField(auto_now=True)
 
 	def __str__(self):
 		return (self.recipient.username+": "+self.message)
