@@ -1,5 +1,9 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.dispatch import receiver
+from django.db.models.signals import post_save
+from channels import Group
+import json
 # from message_channels.settings import MEDIA_URL as medial
 
 # Create your models here.
@@ -39,3 +43,38 @@ class Message(models.Model):
 
 	def __unicode__(self):
 		return __str__(self)
+
+
+
+class ChatProfile(models.Model):
+	user = models.OneToOneField(User, related_name="chatprofile")
+	online = models.BooleanField(default=False)
+
+	def __str__(self):
+		return self.user.username+"'s chat profile"
+
+	def __unicode__(self):
+		return __str__(self)
+
+	@receiver(post_save, sender=User)
+	def create_user_profile(sender, instance, created, **kwargs):
+		if created:
+			ChatProfile.objects.create(user = instance)
+
+	@receiver(post_save, sender=User)
+	def save_user_profile(sender, instance, **kwargs):
+		instance.chatprofile.save()
+
+
+@receiver(post_save, sender=Message)
+def save_user_profile(sender, instance, **kwargs):
+	Group(instance.recipient.username).send({
+	"text": json.dumps({
+	    'message' :instance.message,
+	    }),
+	})
+	Group(instance.sender.username).send({
+	"text": json.dumps({
+	    'message' :instance.message,
+	    }),
+	})

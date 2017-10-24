@@ -41,7 +41,10 @@
       </div>
     </li>
     </ol>
-    <form id="message-form" enctype="multipart/form-data">
+    <form id="message-form" action="{% url 'send_message' %}" enctype="multipart/form-data">
+    	<div style="display: none;">
+    		{{ form.as_p }}
+    	</div>
 	    <div class="chat-input-div">
 	    	<textarea class="chat-input scroll" id="chat-input" rows=1 name="message" type="text" placeholder="Type a message...."></textarea>
 	    	<input id="file-input" style="display: none;" type="file" name="attachments" multiple>
@@ -62,25 +65,65 @@
 <script type="text/javascript" src="{% static 'js/jquery.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/vayu.js' %}"></script>
 <script type="text/javascript">
+
+	function getCookie(name) {
+	    var cookieValue = null;
+	    if (document.cookie && document.cookie != '') {
+	        var cookies = document.cookie.split(';');
+	        for (var i = 0; i < cookies.length; i++) {
+	            var cookie = jQuery.trim(cookies[i]);
+	            // Does this cookie string begin with the name we want?
+	            if (cookie.substring(0, name.length + 1) == (name + '=')) {
+	                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+	                break;
+	            }
+	        }
+	    }
+	    return cookieValue;
+	}
+
+	$.ajaxSetup({
+	    beforeSend: function(xhr, settings) {
+	        if (!(/^http:.*/.test(settings.url) || /^https:.*/.test(settings.url))) {
+	            // Only send the token to relative URLs i.e. locally.
+	            xhr.setRequestHeader("X-CSRFToken", getCookie('csrftoken'));
+	        }
+	    }
+	});
+
+
 	var filebtn = $('#file-input-button'), imagebtn = $('#image-input-button');
 	var file = $('#file-input'), image = $('#image-input');
 	socket = new WebSocket("ws://"+window.location.host+"/chat/")
 	socket.onmessage = function(event){
 		var chatdiv = $('.chat');
 		var data = JSON.parse(event.data);
-		chatdiv.append("<li class='self'><div class='msg'><p>"+data.message.message+"</p><time>"+Date.now()+"</time></div></li>");
+		// console.log(data);
+		chatdiv.append("<li class='self'><div class='msg'><p>"+data.message+"</p><time>"+Date.now()+"</time></div></li>");
 	}
 	$('#message-form').submit(function(event){
 		event.preventDefault();
-		var form = $('#message-form').serialize();
+		var form = new FormData(this);
+		var url = $(this).attr('action');
 		var text = $('#chat-input').val();
+		// console.log($("input[name='csrfmiddlewaretoken']").attr('value'));
 		if($.trim(text).length != 0 || file.val()!="" || image.val()!="" ){
-			socket.send(form);
-			console.log("sent");
-			$('#chat-input').val("");
-			return;
+			$.ajax({
+				type: "POST",
+				url: url,
+				data: form,
+		        success: function (data) {
+					$('#chat-input').val("");
+		        },
+		        error: function (data) {
+		            alert("error"+data)
+		        },
+		        cache: false,
+		        contentType: false,
+		        processData: false,
+			});
+			// $.post(url, form, function(data){alert(data);});
 		}
-		$('#chat-input').val("");
 	});
 
 	filebtn.click(function(e){
