@@ -21,25 +21,10 @@
 <body>
 	<div class="menu">
         <button class="wave sharp transparent button" style="padding:0px;width: 10%;font-size: 4.5vh;height: 100%;padding-top: 1vh;padding-bottom: 1vh; color: white;" >🡨</button>
-        <div class="name">Rajvendra</div>
-        <div class="last">8:09 PM</div>
+        <div class="name">{{ recipient.username }}</div>
+        <div class="last">{% if recipient.chatprofile.online %}online{% else %}offline{% endif %}</div>
     </div>
     <ol class="chat scroll">
-    <li class="other">
-      <div class="msg">
-        <p>Hola!</p>
-        <p>Mere Rashqe qamar tune pehli nazar jab nazar se milayi maza aa gaya.</p>
-        <time>20:17</time>
-      </div>
-    </li>
-    <li class="self">
-      <div class="msg">
-        <p>Puff...</p>
-        <p>It' so freakin awesome</p>
-        <p>Mejor otro día</p>
-        <time>20:18</time>
-      </div>
-    </li>
     </ol>
     <form id="message-form" action="{% url 'send_message' %}" enctype="multipart/form-data">
     	<div style="display: none;">
@@ -53,8 +38,8 @@
 		</div>
 	    <div class="chat-input-div">
 	    	<button type="button" id="emoji" class="tri-button button transparent wave sharp" style="padding:0px;float: left;">emoji</button> 
-	    	<button type="button" id="image-input-button" class="tri-button button transparent wave sharp" style="padding:0px;">image</button> 
-	    	<button type="button" id="file-input-button" class="tri-button button transparent wave sharp" style="padding:0px;float: right;">attachment</button> 
+	    	<button type="button" id="image-input-button" class="tri-button button transparent wave sharp" style="padding:0px;margin:0px;">image<p style="display: none;" class="img-count"></p></button> 
+	    	<button type="button" id="file-input-button" class="tri-button button transparent wave sharp" style="padding:0px;float: right;">attachment<p style="display: none;" class="file-count"></p></button> 
 	    </div>
     </form>
 </body>
@@ -99,7 +84,8 @@
 		var chatdiv = $('.chat');
 		var data = JSON.parse(event.data);
 		// console.log(data);
-		chatdiv.append("<li class='self'><div class='msg'><p>"+data.message+"</p><time>"+Date.now()+"</time></div></li>");
+		chatdiv.append(data.html);
+		// chatdiv.append("<li class='self'><div class='msg'><p>"+data.message+"</p><time>"+Date.now()+"</time></div></li>");
 	}
 	$('#message-form').submit(function(event){
 		event.preventDefault();
@@ -114,6 +100,12 @@
 				data: form,
 		        success: function (data) {
 					$('#chat-input').val("");
+					$('#file-input').val("");
+					$('#image-input').val("");
+					$(".img-count").html("");
+					$(".img-count").hide();
+					$(".file-count").html("");
+					$(".file-count").hide();
 		        },
 		        error: function (data) {
 		            alert("error"+data)
@@ -162,6 +154,8 @@
 			image.val("");
 			alert("Uploaded image should be among "+ValidImageTypes);
 		}
+		$(".img-count").show();
+		$(".img-count").html(e.target.files.length);
 	});
 
 	file.change(function(e){
@@ -176,6 +170,8 @@
 			file.val("");
 			alert("Upload file size should be below 25 Mb");
 		}
+		$(".file-count").show();
+		$(".file-count").html(e.target.files.length);
 	});
 
 

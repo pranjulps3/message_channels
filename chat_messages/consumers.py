@@ -29,10 +29,17 @@ def add(message):
     if(message.user.is_authenticated()):
         Group(message.user.username).add(message.reply_channel)
         message.reply_channel.send({ "accept":True })
+        prof = message.user.chatprofile
+        prof.online = True
+        prof.save()
+
     else:
         message.reply_channel.send({ "accept":False })
 
 
 @channel_session_user
 def disconnect(message):
+    prof = message.user.chatprofile
+    prof.online = False
+    prof.save()
     Group(message.user.username).discard(message.reply_channel)

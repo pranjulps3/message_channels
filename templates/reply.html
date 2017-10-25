@@ -1,0 +1,14 @@
+<li class="{% if sender %}self{% else %}other{% endif %}">
+	<div class="msg">
+		<p>{{ message.message }}</p>
+		{% for file in message.files.all %}
+			<div class="attachment">
+				<a href="{{ file.file.url }}">{{ file.file.name }}</a>
+			</div>
+		{% endfor %}
+		{% for image in message.images.all %}
+			<img class="message-img" src="{{ image.image.url }}"/>
+		{% endfor %}
+		<time>{{ message.timestamp }}</time>
+	</div>
+</li>

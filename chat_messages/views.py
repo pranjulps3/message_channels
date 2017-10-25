@@ -6,6 +6,9 @@ from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from PIL import Image
+from channels import Group
+import json
+from django.template.loader import render_to_string
 # Create your views here.
 
 
@@ -14,6 +17,7 @@ def base(request, id):
 	form = MessageForm(initial={}, recipient=recipient)
 	context = {
 	'form': form,
+	'recipient':recipient,
 	}
 	return render(request, 'chat.html', context)
 
@@ -24,6 +28,7 @@ def receiver(request):
 			message = form.save(commit=False)
 			message.sender = request.user
 			message.message = request.POST.get('message')
+			message.save()
 			for file in request.FILES.getlist('attachments'):
 				try:
 					attach = Attachment.objects.create(file = file, user=request.user)
@@ -39,6 +44,18 @@ def receiver(request):
 				except Exception as e:
 					print(e)
 			message.save()
+			recipient_html = render_to_string('reply.html', {'message':message, 'sender': False,})
+			Group(message.recipient.username).send({
+			"text": json.dumps({
+			    'html' :recipient_html,
+			    }),
+			})
+			sender_html = render_to_string('reply.html', {'message':message, 'sender': True,})
+			Group(message.sender.username).send({
+			"text": json.dumps({
+			    'html' :sender_html,
+			    }),
+			})
 			return HttpResponse("successful")
 		return HttpResponse("successful")
 	return HttpResponse("successful")
