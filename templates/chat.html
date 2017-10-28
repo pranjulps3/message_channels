@@ -19,29 +19,30 @@
 	</style>
 </head>
 <body>
-	<div class="menu">
-        <button class="wave sharp transparent button" style="padding:0px;width: 10%;font-size: 4.5vh;height: 100%;padding-top: 1vh;padding-bottom: 1vh; color: white;" >🡨</button>
+	<div class="menu" id="chat-menu-{{ recipient.id }}">
+        <button class="wave sharp transparent button" style="padding:0px;width: 10%;font-size: 4vh;height: 100%;color: white;" >🡨</button>
         <div class="name">{{ recipient.username }}</div>
         <div class="last">{% if recipient.chatprofile.online %}online{% else %}offline{% endif %}</div>
     </div>
-    <ol class="chat scroll">
+    <ol class="chat scroll" id="chat-{{ recipient.id }}">
     </ol>
-    <form id="message-form" action="{% url 'send_message' %}" enctype="multipart/form-data">
+    <form class = "message-form message-form-{{ recipient.id }}" style="background-color: #f1f0f1;" data="{{ recipient.id }}" id="message-form" action="{% url 'send_message' %}" enctype="multipart/form-data">
     	<div style="display: none;">
     		{{ form.as_p }}
     	</div>
 	    <div class="chat-input-div">
-	    	<textarea class="chat-input scroll" id="chat-input" rows=1 name="message" type="text" placeholder="Type a message...."></textarea>
-	    	<input id="file-input" style="display: none;" type="file" name="attachments" multiple>
-	    	<input id="image-input" style="display: none;" type="file" name="images" multiple>
-	    	<button style="padding:0px;" type="submit" class="send button blue filled wave sharp">send</button> 
+	    	<textarea class="chat-input scroll" data="{{ recipient.id }}" id="chat-input-{{ recipient.id }}" rows=1 name="message" type="text" placeholder="Type a message...."></textarea>
+	    	<input class="chat-file-input" data="{{ recipient.id }}" id="file-input-{{ recipient.id }}" style="display: none;" type="file" name="attachments" multiple>
+	    	<input class="chat-image-input" data="{{ recipient.id }}" id="image-input-{{ recipient.id }}" style="display: none;" type="file" name="images" multiple>
+	    	<button style="padding:0px;background-color: #f1f0f1;" type="submit" class="send button transparent filled wave sharp"><img style="height: 100%;max-width:100%;z-index: 10;" src="{% static 'img/chat_send.png' %}"></button> 
 		</div>
 	    <div class="chat-input-div">
-	    	<button type="button" id="emoji" class="tri-button button transparent wave sharp" style="padding:0px;float: left;">emoji</button> 
-	    	<button type="button" id="image-input-button" class="tri-button button transparent wave sharp" style="padding:0px;margin:0px;">image<p style="display: none;" class="img-count"></p></button> 
-	    	<button type="button" id="file-input-button" class="tri-button button transparent wave sharp" style="padding:0px;float: right;">attachment<p style="display: none;" class="file-count"></p></button> 
+	    	<button type="button" id="emoji" data="{{ recipient.id }}" class="chat-emoji-btn tri-button button transparent wave sharp" style="padding:0px;background-color: #f1f0f1;float: left;"><img style="height: 90%;" src="{% static 'img/emoji.png' %}"></button> 
+	    	<button type="button" id="image-input-button" style="background-color: #f1f0f1;" data="{{ recipient.id }}" class="chat-image-btn tri-button button transparent wave sharp" style="padding:0px;margin:0px;"><img style="height: 100%;" src="{% static 'img/chat_image.png' %}"><p style="float:right;display: none;margin-right: 10%;" id="img-count-{{recipient.id}}"></p></button> 
+	    	<button type="button" id="file-input-button" data="{{ recipient.id }}" class="chat-file-btn tri-button button transparent wave sharp" style="background-color: #f1f0f1;padding:0px;float: right;"><img style="height: 90%;" src="{% static 'img/chat_file.png' %}"><p style="float:right;display: none;margin-right: 10%;" id="file-count-{{ recipient.id }}"></p></button> 
 	    </div>
     </form>
+
 </body>
 
 
@@ -77,35 +78,34 @@
 	});
 
 
-	var filebtn = $('#file-input-button'), imagebtn = $('#image-input-button');
-	var file = $('#file-input'), image = $('#image-input');
 	socket = new WebSocket("ws://"+window.location.host+"/chat/")
 	socket.onmessage = function(event){
-		var chatdiv = $('.chat');
 		var data = JSON.parse(event.data);
+		var chatdiv = $('#chat-'+data.id);
 		// console.log(data);
 		chatdiv.append(data.html);
 		// chatdiv.append("<li class='self'><div class='msg'><p>"+data.message+"</p><time>"+Date.now()+"</time></div></li>");
 	}
-	$('#message-form').submit(function(event){
+	$('.message-form').submit(function(event){
 		event.preventDefault();
 		var form = new FormData(this);
+		var id = $(this).attr("data");
 		var url = $(this).attr('action');
-		var text = $('#chat-input').val();
+		var text = $("#chat-input-"+id).val();
 		// console.log($("input[name='csrfmiddlewaretoken']").attr('value'));
-		if($.trim(text).length != 0 || file.val()!="" || image.val()!="" ){
+		if($.trim(text).length != 0 || $('#file-input-'+id).val()!="" || $('#image-input-'+id).val()!="" ){
 			$.ajax({
 				type: "POST",
 				url: url,
 				data: form,
 		        success: function (data) {
-					$('#chat-input').val("");
-					$('#file-input').val("");
-					$('#image-input').val("");
-					$(".img-count").html("");
-					$(".img-count").hide();
-					$(".file-count").html("");
-					$(".file-count").hide();
+					$("#chat-input-"+id).val("");
+					$('#file-input-'+id).val("");
+					$('#image-input-'+id).val("");
+					$("#img-count-"+id).html("");
+					$("#img-count-"+id).hide();
+					$("#file-count-"+id).html("");
+					$("#file-count-"+id).hide();
 		        },
 		        error: function (data) {
 		            alert("error"+data)
@@ -118,23 +118,27 @@
 		}
 	});
 
-	filebtn.click(function(e){
-		file.trigger("click");
+	$('.chat-file-btn').click(function(e){
+		var id = $(this).attr("data");
+		$('#file-input-'+id).trigger("click");
 	});
 
-	imagebtn.click(function(e){
-		image.trigger("click");
+	$('.chat-image-btn').click(function(e){
+		var id = $(this).attr("data");
+		$('#image-input-'+id).trigger("click");
 	});
 
 	$('.chat-input').keyup(function (event) {
+		var id = $(this).attr('data');
     	if (event.keyCode == 13 & !event.shiftKey) {          
-            $('#message-form').submit();
+            $('.message-form-'+id).submit();
     	}
 	});
 
 	var ValidImageTypes = ["image/gif", "image/jpeg", "image/png"];
 
-	image.change(function(e){
+	$('.chat-image-input').change(function(e){
+		var id = $(this).attr('data');
 		var boolsize = true, booltype = true;
 		for(i=0; i < e.target.files.length; i++){
 			var fl = e.target.files[i];
@@ -154,12 +158,18 @@
 			image.val("");
 			alert("Uploaded image should be among "+ValidImageTypes);
 		}
-		$(".img-count").show();
-		$(".img-count").html(e.target.files.length);
+		if(e.target.files.length>0)
+		{
+			$("#img-count-"+id).show();
+			$("#img-count-"+id).html(e.target.files.length);
+		}
+		else
+			$("#img-count-"+id).hide();
 	});
 
-	file.change(function(e){
+	$('.chat-file-input').change(function(e){
 		var boolsize = true;
+		var id = $(this).attr('data');
 		for(i=0; i < e.target.files.length; i++){
 			var fl = e.target.files[i];
 			if ((fl.size/(1024*1024)) > 25)
@@ -170,8 +180,13 @@
 			file.val("");
 			alert("Upload file size should be below 25 Mb");
 		}
-		$(".file-count").show();
-		$(".file-count").html(e.target.files.length);
+		if(e.target.files.length>0)
+		{
+			$("#file-count-"+id).show();
+			$("#file-count-"+id).html(e.target.files.length);
+		}
+		else
+			$("#file-count-"+id).hide();
 	});
 
 

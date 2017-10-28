@@ -48,12 +48,14 @@ def receiver(request):
 			Group(message.recipient.username).send({
 			"text": json.dumps({
 			    'html' :recipient_html,
+			    'id'   : message.sender.id,
 			    }),
 			})
 			sender_html = render_to_string('reply.html', {'message':message, 'sender': True,})
 			Group(message.sender.username).send({
 			"text": json.dumps({
 			    'html' :sender_html,
+			    'id'   : message.recipient.id,
 			    }),
 			})
 			return HttpResponse("successful")
