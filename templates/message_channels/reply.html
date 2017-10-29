@@ -1,10 +1,14 @@
+{% load static %}
 <li class="{% if sender %}self{% else %}other{% endif %}" id="message-{{ message.id }}">
 	<div class="msg">
 		<p>{{ message.message | linebreaks }}</p>
 		{% for file in message.files.all %}
+		<a href="{{ file.file.url }}">
 			<div class="attachment">
-				<a href="{{ file.file.url }}">{{ file.file.name }}</a>
+				{{ file.file.name }}
+				&emsp;<img style="height: 3.5vh;width: 3.5vh;box-shadow: none;display: inline;" src="{% static 'img/download.png' %}"/>
 			</div>
+		</a>
 		{% endfor %}
 		{% for image in message.images.all %}
 			<img class="message-img" src="{{ image.image.url }}"/>

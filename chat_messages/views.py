@@ -12,6 +12,12 @@ from django.template.loader import render_to_string
 # Create your views here.
 
 
+def temp(request):
+	user1 = User.objects.all()
+	user2 = user1[0]
+	user1 = user1[1]
+	return render(request, 'message_channels/temp.html', {'user1':user1, 'user2':user2,})
+
 def base(request, id):
 	recipient = get_object_or_404(User, id=id)
 	form = MessageForm(initial={}, recipient=recipient)
@@ -30,6 +36,7 @@ def base(request, id):
 	'recipient':recipient,
 	'messages':messages,
 	'last_id':last_id,
+	'is_view':True,
 	}
 	return render(request, 'message_channels/chat.html', context)
 
@@ -75,6 +82,8 @@ def receiver(request):
 			return HttpResponse(json.dumps({'success':True, 'html':""}))
 		return HttpResponse(json.dumps({'success':False, 'html':"Invalid Message Form"}))
 	return HttpResponse(json.dumps({'success':False, 'html':"Request type error"}))
+
+
 
 def load_more(request, id):
 	try:

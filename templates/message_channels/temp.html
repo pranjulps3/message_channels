@@ -1,0 +1,6 @@
+{% load static %}
+{% load chat_tags %}
+{% get_headers %}
+<div style="height:400px;width:300px;z-index: 999;">{% get_chatbox request user2 %}</div>
+<div style="height:400px;width:300px;margin-left: 50%;margin-top: -400px;z-index: 989;">{% get_chatbox request user1 %}</div>
+{% get_footers %}
