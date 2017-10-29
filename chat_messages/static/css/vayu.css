@@ -554,14 +554,16 @@ a{
 
 .msg {
     min-width: 50px;
-    padding: 10px;
-    border-radius: 15px;
+    padding: 2vh;
+    padding-top: 1.2vh;
+    padding-bottom: 1.2vh;
+    border-radius: 2vh;
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14),
                   0 1px 5px 0 rgba(0, 0, 0, 0.12),
                   0 3px 1px -2px rgba(0, 0, 0, 0.2);
 }
 .msg p {
-    font-size: 0.8rem;
+    font-size: 3vh;
     margin: 0 0 0.2rem 0;
     color: #777;
 }
@@ -575,27 +577,20 @@ a{
                   0 5px 5px -3px rgba(0, 0, 0, 0.4);
     transition: all .4s cubic-bezier(0.565, -0.260, 0.255, 1.410);
     cursor: default;
+    max-width: 70%;
+    height: auto;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
 }
 
-@media screen and (max-width: 800px) {
-    .msg img {
-    width: 300px;
-}
-}
-@media screen and (max-width: 550px) {
-    .msg img {
-    width: 200px;
-}
-}
+
 
 .msg time {
-    font-size: 0.7rem;
+    font-size: 1.7vh;
     color: #ccc;
-    margin-top: 3px;
+    margin-top: 0.5vh;
     float: right;
     cursor: default;
     -webkit-touch-callout: none;
@@ -637,7 +632,7 @@ textarea.chat-input {
     float: left;
     padding-left: 3%;
     padding-right: 2%;
-    font-size: 4vh;
+    font-size: 3vh;
     color: #666;
     resize: none;
 }

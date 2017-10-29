@@ -18,16 +18,16 @@
 	</style>
 
 	{% load chat_tags %}
-<div style="height: 400px;width: 300px;margin-left: 30%;margin-top: 10%;">
+
 	<div class="menu" data="{{ recipient.id }}" id="chat-menu-{{ recipient.id }}">
 	        <div class="name">{{ recipient.username }}</div>
 	        <div class="last">{% if recipient.chatprofile.online %}online{% else %}offline{% endif %}</div>
-        <button class="chat-menu wave sharp transparent button" data="{{ recipient.id }}" id="chat-menu-{{ recipient.id }}" style="padding:0px;width: 10%;font-size: 4vh;height: 100%;color: white;margin-left: 90%;" ><img style="height: 100%;overflow: hidden;align-self: center;" src="{% static 'img/menu.png' %}"></button>
+        <button class="chat-menu wave sharp transparent button" data="{{ recipient.id }}" id="chat-menu-{{ recipient.id }}" style="padding:0px;width: 10%;font-size: 4vh;height: 100%;color: white;margin-left: 90%;" ><img style="height: 100%;max-width:100%;overflow: hidden;align-self: center;" src="{% static 'img/menu.png' %}"></button>
     </div>
     <ol class="chat scroll" id="chat-{{ recipient.id }}">
     	{% if last_id == -1 %}
     	{% else %}
-    		<button class="wave sharp transparent button load-more" action="" id="load-more-{{ recipient.id }}" data-id={{ last_id }}>Load more</button>
+    		<button class="wave sharp transparent button load-more" style="width: 100%;color: grey;" action="{% url 'load_more' recipient.id %}" id="load-more-{{ recipient.id }}" data-id={{ last_id }}>Load more</button>
     	{% endif %}
     	{% for message in messages %}
     		{% get_message message request.user %}
@@ -212,7 +212,34 @@
 	});
 
 	$(".load-more").click(function(e){
-		var id = $(this).attr('data');
-		$
+		var loadbtn = $(this);
+		var data_id = $(this).attr('data-id');
+		var url = $(this).attr('action');
+		$.ajax({
+			type: "POST",
+			url: url,
+			data: {"message_id":data_id},
+			success: function (data) {
+				var dat = JSON.parse(data);
+					if(dat.success==true)
+					{
+						loadbtn.after(dat.html);
+						document.getElementById('message-'+data_id).scrollIntoView();
+						if(dat.last_id==-1){
+							loadbtn.remove();
+						}
+						else{
+							loadbtn.attr("data-id",dat.last_id);
+						}
+					}
+					else{
+						console.log(dat.html);
+					}
+		        },
+		        error: function (data) {
+		            console.log("error"+data)
+		        },
+
+		});
 	});
 </script>
