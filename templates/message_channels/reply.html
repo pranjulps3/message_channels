@@ -1,4 +1,4 @@
-<li class="{% if sender %}self{% else %}other{% endif %}">
+<li class="{% if sender %}self{% else %}other{% endif %}" id="message-{{ message.id }}">
 	<div class="msg">
 		<p>{{ message.message }}</p>
 		{% for file in message.files.all %}

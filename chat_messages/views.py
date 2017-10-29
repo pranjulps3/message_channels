@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.db.models import Q
 from .forms import MessageForm
-from .models import Attachment, MessageImage
+from .models import Attachment, MessageImage, Message
 from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
@@ -15,11 +15,22 @@ from django.template.loader import render_to_string
 def base(request, id):
 	recipient = get_object_or_404(User, id=id)
 	form = MessageForm(initial={}, recipient=recipient)
+	mymessages = Message.objects.filter(sender=request.user, recipient=recipient)
+	tomessages = Message.objects.filter(sender=recipient, recipient=request.user)
+	messages = tomessages.union(mymessages)
+	last_id = -1
+	if tomessages.count()>=50:
+		messages = messages.order_by('timestamp')[:50]
+		last_id = messages[0].id
+	messages = messages.order_by('timestamp')
+	print(messages)
 	context = {
 	'form': form,
 	'recipient':recipient,
+	'messages':messages,
+	'last_id':last_id,
 	}
-	return render(request, 'chat.html', context)
+	return render(request, 'message_channels/chat.html', context)
 
 def receiver(request):
 	if request.method == 'POST':
@@ -44,20 +55,25 @@ def receiver(request):
 				except Exception as e:
 					print(e)
 			message.save()
-			recipient_html = render_to_string('reply.html', {'message':message, 'sender': False,})
+			recipient_html = render_to_string('message_channels/reply.html', {'message':message, 'sender': False,})
 			Group(message.recipient.username).send({
 			"text": json.dumps({
 			    'html' :recipient_html,
 			    'id'   : message.sender.id,
+			    'message_id'   : message.id,
 			    }),
 			})
-			sender_html = render_to_string('reply.html', {'message':message, 'sender': True,})
+			sender_html = render_to_string('message_channels/reply.html', {'message':message, 'sender': True,})
 			Group(message.sender.username).send({
 			"text": json.dumps({
 			    'html' :sender_html,
 			    'id'   : message.recipient.id,
+			    'message_id'  : message.id,
 			    }),
 			})
 			return HttpResponse("successful")
-		return HttpResponse("successful")
-	return HttpResponse("successful")
+		return HttpResponse("unsuccessful")
+	return HttpResponse("unsuccessful")
+
+def load_more(request):
+	pass

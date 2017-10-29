@@ -1,7 +1,6 @@
-<!DOCTYPE html>
-<html lang="en">
+
 {% load static %}
-<head>
+
 	<link rel="stylesheet" type="text/css" href="{% static 'css/vayu.css' %}">
 	<style type="text/css">
 		html, body{
@@ -17,14 +16,22 @@
   			background-color: rgba(0, 0, 0, .6);
 		}
 	</style>
-</head>
-<body>
-	<div class="menu" id="chat-menu-{{ recipient.id }}">
-        <button class="wave sharp transparent button" style="padding:0px;width: 10%;font-size: 4vh;height: 100%;color: white;" >🡨</button>
-        <div class="name">{{ recipient.username }}</div>
-        <div class="last">{% if recipient.chatprofile.online %}online{% else %}offline{% endif %}</div>
+
+	{% load chat_tags %}
+<div style="height: 400px;width: 300px;margin-left: 30%;margin-top: 10%;">
+	<div class="menu" data="{{ recipient.id }}" id="chat-menu-{{ recipient.id }}">
+	        <div class="name">{{ recipient.username }}</div>
+	        <div class="last">{% if recipient.chatprofile.online %}online{% else %}offline{% endif %}</div>
+        <button class="chat-menu wave sharp transparent button" data="{{ recipient.id }}" id="chat-menu-{{ recipient.id }}" style="padding:0px;width: 10%;font-size: 4vh;height: 100%;color: white;margin-left: 90%;" ><img style="height: 100%;overflow: hidden;align-self: center;" src="{% static 'img/menu.png' %}"></button>
     </div>
     <ol class="chat scroll" id="chat-{{ recipient.id }}">
+    	{% if last_id == -1 %}
+    	{% else %}
+    		<button class="wave sharp transparent button load-more" action="" id="load-more-{{ recipient.id }}" data-id={{ last_id }}>Load more</button>
+    	{% endif %}
+    	{% for message in messages %}
+    		{% get_message message request.user %}
+    	{% endfor %}
     </ol>
     <form class = "message-form message-form-{{ recipient.id }}" style="background-color: #f1f0f1;" data="{{ recipient.id }}" id="message-form" action="{% url 'send_message' %}" enctype="multipart/form-data">
     	<div style="display: none;">
@@ -38,12 +45,12 @@
 		</div>
 	    <div class="chat-input-div">
 	    	<button type="button" id="emoji" data="{{ recipient.id }}" class="chat-emoji-btn tri-button button transparent wave sharp" style="padding:0px;background-color: #f1f0f1;float: left;"><img style="height: 90%;" src="{% static 'img/emoji.png' %}"></button> 
-	    	<button type="button" id="image-input-button" style="background-color: #f1f0f1;" data="{{ recipient.id }}" class="chat-image-btn tri-button button transparent wave sharp" style="padding:0px;margin:0px;"><img style="height: 100%;" src="{% static 'img/chat_image.png' %}"><p style="float:right;display: none;margin-right: 10%;" id="img-count-{{recipient.id}}"></p></button> 
+	    	<button type="button" id="image-input-button" style="padding:0px;margin:0px;background-color: #f1f0f1;" data="{{ recipient.id }}" class="chat-image-btn tri-button button transparent wave sharp"><img style="height: 90%;" src="{% static 'img/chat_image.png' %}"><p style="float:right;display: none;margin-right: 10%;" id="img-count-{{recipient.id}}"></p></button> 
 	    	<button type="button" id="file-input-button" data="{{ recipient.id }}" class="chat-file-btn tri-button button transparent wave sharp" style="background-color: #f1f0f1;padding:0px;float: right;"><img style="height: 90%;" src="{% static 'img/chat_file.png' %}"><p style="float:right;display: none;margin-right: 10%;" id="file-count-{{ recipient.id }}"></p></button> 
 	    </div>
     </form>
+</div>
 
-</body>
 
 
 
@@ -84,6 +91,7 @@
 		var chatdiv = $('#chat-'+data.id);
 		// console.log(data);
 		chatdiv.append(data.html);
+		document.getElementById('message-'+data.message_id).scrollIntoView();
 		// chatdiv.append("<li class='self'><div class='msg'><p>"+data.message+"</p><time>"+Date.now()+"</time></div></li>");
 	}
 	$('.message-form').submit(function(event){
@@ -116,6 +124,16 @@
 			});
 			// $.post(url, form, function(data){alert(data);});
 		}
+	});
+
+	$(".chat-menu").click(function(e){
+		e.preventDefault();
+	});
+
+	$('.menu').click(function(e){
+		var id = $(this).attr("data");
+		$("#chat-"+id).slideToggle();
+		$(".message-form-"+id).slideToggle();
 	});
 
 	$('.chat-file-btn').click(function(e){
@@ -189,5 +207,12 @@
 			$("#file-count-"+id).hide();
 	});
 
+	$(document).ready(function(event){
+		$(".chat").animate({ scrollTop: 9999 }, 1000);
+	});
 
+	$(".load-more").click(function(e){
+		var id = $(this).attr('data');
+		$
+	});
 </script>
