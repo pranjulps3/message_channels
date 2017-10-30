@@ -6,6 +6,7 @@
 	{% get_headers %}
 {% endif %}
 
+
 	<div class="menu" data="{{ recipient.id }}" id="chat-menu-{{ recipient.id }}">
 	        <div class="name">{{ recipient.username }}</div>
 	        <div class="last">{% if recipient.chatprofile.online %}online{% else %}offline{% endif %}</div>
@@ -19,8 +20,14 @@
     	{% for message in messages %}
     		{% get_message message request.user %}
     	{% endfor %}
+    	
     </ol>
     <form class = "message-form message-form-{{ recipient.id }}" style="background-color: #f1f0f1;" data="{{ recipient.id }}" id="message-form" action="{% url 'send_message' %}" enctype="multipart/form-data">
+    	<div class="chat-error" data="{{ recipient.id }}" id="chat-error-{{ recipient.id }}" style="margin-top:-4vh; font-size: 3vh;z-index:99;color: #8a6d3b;background-color: #faebcc;height:4vh;text-align: center;">
+    		<b>⚠ </b>
+    		<p style="display:inline;" class="chat-error-text" id="chat-error-text-{{ recipient.id }}">error</p>
+    		<a id="reconnect" style="display:inline;cursor: pointer;"> ... reconnecting ...</a>
+    	</div>
     	<div style="display: none;">
     		{{ form.as_p }}
     	</div>

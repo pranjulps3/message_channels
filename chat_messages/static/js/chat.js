@@ -23,16 +23,63 @@ function getCookie(name) {
 	    }
 	});
 
+	wsstart();
 
-	socket = new WebSocket("ws://"+window.location.host+"/chat/")
-	socket.onmessage = function(event){
-		var data = JSON.parse(event.data);
-		var chatdiv = $('#chat-'+data.id);
-		// console.log(data);
-		chatdiv.append(data.html);
-		document.getElementById('message-'+data.message_id).scrollIntoView();
-		// chatdiv.append("<li class='self'><div class='msg'><p>"+data.message+"</p><time>"+Date.now()+"</time></div></li>");
+	function wsstart(){
+		chat_socket = new WebSocket("ws://"+window.location.host+"/chat/");
+		$('.chat-error').slideUp();
+			chat_socket.onmessage = function(event){
+			// var msg = event.data;
+		 //    if (msg == '__pong__') {
+		 //        pong();
+		 //        return;
+		 //    }
+			var data = JSON.parse(event.data);
+			var chatdiv = $('#chat-'+data.id);
+			// console.log(data);
+			chatdiv.append(data.html);
+			document.getElementById('message-'+data.message_id).scrollIntoView();
+			// chatdiv.append("<li class='self'><div class='msg'><p>"+data.message+"</p><time>"+Date.now()+"</time></div></li>");
+		}
+		// var tm;
+		// function ping() {
+		// 	tm = setTimeout( warning, 5000);
+		// 	try{
+		//         chat_socket.send('__ping__');
+		//     }
+		//     catch(exc){
+		//     	warning();
+		//     }
+		        
+		// }
+
+		// function pong() {
+		//     clearTimeout(tm);
+		// }
+		
+		chat_socket.onopen = function(event){
+			$('.chat-error').slideUp();
+			// setInterval(ping, 10000);
+		}
+
+
+		chat_socket.onclose = warning;
 	}
+
+	$('#reconnect').click(warning);
+
+	function warning(){
+		var errordiv = $('.chat-error');
+		var error = $('.chat-error-text');
+		error.text("Unable to connect to servers :/ ");
+		errordiv.slideDown();
+		chat_socket=null;
+		setTimeout(wsstart, 10000);
+	}
+
+	
+
+
 	$('.message-form').submit(function(event){
 		event.preventDefault();
 		var form = new FormData(this);
@@ -148,6 +195,7 @@ function getCookie(name) {
 
 	$(document).ready(function(event){
 		$(".chat").animate({ scrollTop: 9999 }, 1000);
+		$(".chat-error").hide();
 	});
 
 	$(".load-more").click(function(e){
