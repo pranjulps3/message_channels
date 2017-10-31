@@ -6,4 +6,4 @@ import message_channels.settings as settings
 urlpatterns = [
 	url(r'^chat/', include('chat_messages.urls')),
 	url(r'^admin/', admin.site.urls),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_URL)
+] + static(settings.MEDIA_ROOT, document_root=settings.MEDIA_ROOT)

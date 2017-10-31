@@ -83,12 +83,19 @@ DATABASES = {
 }
 
 
+# CHANNEL_LAYERS = {
+#     "default": {
+#         "BACKEND": "asgi_redis.RedisChannelLayer",
+#         "CONFIG": {
+#             "hosts": [("localhost", 6379)],
+#         },
+#         "ROUTING": "message_channels.routing.channel_routing",
+#     },
+# }
+
 CHANNEL_LAYERS = {
     "default": {
-        "BACKEND": "asgi_redis.RedisChannelLayer",
-        "CONFIG": {
-            "hosts": [("localhost", 6379)],
-        },
+        "BACKEND": "asgiref.inmemory.ChannelLayer",
         "ROUTING": "message_channels.routing.channel_routing",
     },
 }
@@ -132,4 +139,4 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
-# MEDIA_ROOT = os.path.join(BASE_DIR, '/media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')

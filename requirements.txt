@@ -1,4 +1,4 @@
 django
-django-channels
+channels
 asgi_redis
 pillow

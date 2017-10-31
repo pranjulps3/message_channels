@@ -59,6 +59,7 @@ function getCookie(name) {
 		
 		chat_socket.onopen = function(event){
 			$('.chat-error').slideUp();
+			rebase();
 			// setInterval(ping, 10000);
 		}
 
@@ -74,7 +75,7 @@ function getCookie(name) {
 		error.text("Unable to connect to servers :/ ");
 		errordiv.slideDown();
 		chat_socket=null;
-		setTimeout(wsstart, 10000);
+		setTimeout(wsstart, 15000);
 	}
 
 	
@@ -195,8 +196,39 @@ function getCookie(name) {
 
 	$(document).ready(function(event){
 		$(".chat").animate({ scrollTop: 9999 }, 1000);
-		$(".chat-error").hide();
 	});
+
+	function rebase(){
+		var csrf = $("input[name=csrfmiddlewaretoken]").val();
+		$(".chat").each(function( i, obj){
+			var chat = $(this);
+			var recent = chat.attr("recent");
+			var url = chat.attr("action");
+			var id = chat.attr("data");
+			$.ajax({
+				type: "POST",
+				url: url,
+				data: { "csrfmiddlewaretoken": csrf, "recent":recent},
+				success: function(data){
+					data = JSON.parse(data);
+					if(data.success==true)
+					{
+						chat.append(data.html);
+						chat.attr("recent", data.recent);
+						document.getElementById('message-'+data.recent).scrollIntoView();
+
+					}
+					else
+					{
+						console.log("success"+data.html);
+					}
+				},
+				error: function(data){
+					console.log("error"+data);
+				},
+			});
+		});
+	}
 
 	$(".load-more").click(function(e){
 		var loadbtn = $(this);
