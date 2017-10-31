@@ -6,12 +6,13 @@
 	{% get_headers %}
 {% endif %}
 
+
 	<div class="menu" data="{{ recipient.id }}" id="chat-menu-{{ recipient.id }}">
 	        <div class="name">{{ recipient.username }}</div>
 	        <div class="last">{% if recipient.chatprofile.online %}online{% else %}offline{% endif %}</div>
         <button class="chat-menu wave sharp transparent button" data="{{ recipient.id }}" id="chat-menu-{{ recipient.id }}" style="padding:0px;width: 10%;font-size: 4vh;height: 100%;color: white;margin-left: 90%;" ><img style="height: 100%;max-width:100%;overflow: hidden;align-self: center;" src="{% static 'img/menu.png' %}"></button>
     </div>
-    <ol class="chat scroll" id="chat-{{ recipient.id }}">
+    <ol class="chat scroll" id="chat-{{ recipient.id }}" data="{{ recipient.id }}" action="{% url 'rebase' recipient.id %}" recent="{{ recent }}">
     	{% if last_id == -1 %}
     	{% else %}
     		<button class="wave sharp transparent button load-more" style="width: 100%;color: grey;" action="{% url 'load_more' recipient.id %}" id="load-more-{{ recipient.id }}" data-id={{ last_id }}>Load more</button>
@@ -19,8 +20,15 @@
     	{% for message in messages %}
     		{% get_message message request.user %}
     	{% endfor %}
+    	
     </ol>
     <form class = "message-form message-form-{{ recipient.id }}" style="background-color: #f1f0f1;" data="{{ recipient.id }}" id="message-form" action="{% url 'send_message' %}" enctype="multipart/form-data">
+        {% csrf_token %}
+    	<div class="chat-error" data="{{ recipient.id }}" id="chat-error-{{ recipient.id }}" style="display:none;margin-top:-4vh; font-size: 3vh;z-index:99;color: #8a6d3b;background-color: #faebcc;height:4vh;text-align: center;">
+    		<b>⚠ </b>
+    		<p style="display:inline;" class="chat-error-text" id="chat-error-text-{{ recipient.id }}">error</p>
+    		<a id="reconnect" style="display:inline;cursor: pointer;"> ... reconnecting ...</a>
+    	</div>
     	<div style="display: none;">
     		{{ form.as_p }}
     	</div>

@@ -18,7 +18,6 @@ def message(message):
     # ASGI WebSocket packet-received and send-packet message types
     # both have a "text" key for their textual data.
     mes = parse_qs(message.content['text'])
-    user = User.objects.get(username = 'user')
     #sender = User.objects.get(username = message.user.username)
     #message = Message.objects.create(sender=sender, recipient = user, message = mes)
     

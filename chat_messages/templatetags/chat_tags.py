@@ -20,18 +20,24 @@ def get_chatbox(request,recipient):
 	tomessages = Message.objects.filter(sender=recipient, recipient=request.user)
 	messages = tomessages.union(mymessages)
 	last_id = -1
+	recent = -1
 	cnt = messages.count()
 	if cnt>=50:
 		messages = messages.order_by('timestamp')[cnt-50:cnt]
 		last_id = messages[0].id
+		recent = messages[49].id
 	else:
+		if cnt != 0:
+			recent = messages[cnt-1].id
 		messages = messages.order_by('timestamp')
 	return {
 	'form': form,
 	'request':request,
 	'recipient':recipient,
 	'messages':messages,
+	'recent':recent,
 	'last_id':last_id,
+	'is_view':False
 	}
 
 

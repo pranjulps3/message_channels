@@ -10,7 +10,7 @@ from django.template.loader import render_to_string
 # Create your models here.
 
 def file_directory(instance, filename):
-	return 'media/chat/user_{0}/attachments/{1}'.format(instance.user.id, filename)
+	return 'chat/user_{0}/attachments/{1}'.format(instance.user.id, filename)
 
 """ A message can have multiple attachments to it """
 class Attachment(models.Model):
@@ -19,7 +19,7 @@ class Attachment(models.Model):
 
 
 def image_directory(instance, filename):
-	return 'media/chat/user_{0}/images/{1}'.format(instance.user.id, filename)
+	return 'chat/user_{0}/images/{1}'.format(instance.user.id, filename)
 
 """ A message can have multiple images in it """
 class MessageImage(models.Model):
